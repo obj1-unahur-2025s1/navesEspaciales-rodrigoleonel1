@@ -1,9 +1,43 @@
-import example.pepita
+import example.*
 
-describe "group of tests for pepita" {
+describe "Tests para las naves" {
+  //de pasajeros
+  const naveBus = new NaveDePasajeros(cantPasajeros = 100, velocidad = 10000, combustible = 10000, direccion = 7)
+  const naveSame = new NaveHospital(cantPasajeros = 50, velocidad = 10000, combustible = 10000, direccion = 7, quirofanosPreparados = false)
+  //baliza
+  const naveB = new NaveBaliza(velocidad = 10000, combustible = 12000, direccion = 2, baliza = "azul")
+  //de combate
+  const comb = new NaveDeCombate(velocidad = 12000, combustible = 10000, direccion = -10)
+  const combSigi = new NaveDeCombateSigilosa(velocidad = 18000, combustible = 8000, direccion = -7)
 
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+
+  test "La nave baliza inicia con la baliza en azul y con direcion 2,
+        pero al preparar un viaje cambia a verde y se pone paralela al sol" {
+          naveB.prepararViaje()
+          assert.equals("verde", naveB.baliza())
+
   }
+  test "las naves de pasajeros cargan 4 raciones de comida y 6 de bebida, para cada pasajero
+        y se acercan un poco al Sol." {
+    naveBus.prepararViaje()
+    naveSame.prepararViaje()
+    assert.equals(100 * 4, naveBus.comidas())// la cantidad de comidas es 4 veces la cantidad de pasajeros
+    assert.equals(100 * 6, naveBus.bebidas())// la cantidad de bebidas es 6 veces la cantidad de pasajeros
+    assert.equals(50 * 4, naveSame.comidas())// la cantidad de comidas es 4 veces la cantidad de pasajeros
+    assert.equals(50 * 6, naveSame.bebidas())// la cantidad de bebidas es 6 veces la cantidad de pasajeros
+
+  }
+  test "si la nave de combate despliega los misiles ya no esta tranquila" {
+    assert.that(comb.estaTranquila()) // empieza estando tranquila
+    comb.desplegasMisiles()// despliega los misiles
+    assert.notThat(comb.estaTranquila())// ya no se encuentra tranquila
+  }
+  test "la nave de combate sigilosa al recibir una amenaza, se acerca al dos dos veces,
+      es decir que la direccion aumenta de - 7 inicial a -5, y emite el mensaje Amenaza recibida"{
+        assert.equals(-7, combSigi.direccion()) // comienza con la direccion en -7
+        combSigi.recibirAmenaza()// recibe la amenaza
+        assert.equals(["Amenaza recibida"],combSigi.mensajesEmitidos() ) // emite el mensaje
+        assert.equals(-5, combSigi.direccion())// cambia la direccion a -5, acercandose al sol
+      }
 
 }
